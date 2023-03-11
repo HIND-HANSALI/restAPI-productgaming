@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\AuthController;
+use  App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +18,9 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 Route::group(['controller' => CategorieController::class], function () {
             Route::get('/categories', 'index');
             Route::post('/categories', 'store');
@@ -37,8 +38,17 @@ Route::group(['controller' => ProduitController::class], function () {
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login')->name('login');
     Route::post('/register', 'register');
-    // Route::post('/forgotPassword','forgotPassword');
+    Route::post('/forgotPassword','forgotPassword');
+    Route::post('/resetpassword','resetpassword')->name('password.reset');
     Route::middleware('auth:api')->group(function (){
-        Route::post('logout', 'logout');
-        Route::post('refresh', 'refresh'); });
+        Route::post('/logout', 'logout');
+        Route::post('/refresh', 'refresh'); 
+    });
+});
+Route::group(['controller' => UserController::class], function () {
+    Route::get('/users', 'index');
+    Route::put('/updateUser/{user}', 'update');
+    // Route::put('updateNameEmail/{user}', 'updateNameEmail')->middleware(['permission:edit my profil|edit all profil']);
+    // Route::put('updatePassword/{user}', 'updatePassword')->middleware(['permission:edit my profil|edit all profil']);
+    // Route::delete('/{user}', 'destroy')->middleware(['permission:delete my profil|delete all profil']);
 });
