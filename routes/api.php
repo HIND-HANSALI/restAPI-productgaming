@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ProduitController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +33,12 @@ Route::group(['controller' => ProduitController::class], function () {
     Route::post('/produits','store');
     Route::put('/produits/{id}', 'update');
     Route::delete('/produits/{id}', 'destroy');
+});
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/login', 'login')->name('login');
+    Route::post('/register', 'register');
+    // Route::post('/forgotPassword','forgotPassword');
+    Route::middleware('auth:api')->group(function (){
+        Route::post('logout', 'logout');
+        Route::post('refresh', 'refresh'); });
 });
