@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+// use App\Http\Requests\LoginAuthRequest;
+// use App\Http\Requests\RegisterAuthRequest;
+use App\Http\Requests\ForgotPasswordAuthRequest;
+use App\Http\Requests\ResetPasswordAuthRequest;
 
 class AuthController extends Controller
 {
@@ -86,5 +91,31 @@ class AuthController extends Controller
                 'type' => 'bearer',
             ]
         ]);
+    }
+    public function forgotPassword(ForgotPasswordAuthRequest $request)
+    {
+        $response = Password::sendResetLink($request->validated());
+
+        return $response == Password::RESET_LINK_SENT
+            ? response()->json(['success' => true])
+            : response()->json(['error' => 'Failed to send reset link'], 500);
+    }
+
+    public function resetpassword(ResetPasswordAuthRequest $request)
+    {
+        $response = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ]);
+
+                $user->save();
+            }
+        );
+
+        return $response == Password::PASSWORD_RESET
+            ? response()->json(['success' => true])
+            : response()->json(['error' => 'Failed to reset password'], 500);
     }
 }

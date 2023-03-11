@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UpdateNameEmailUserRequest;
+use App\Http\Requests\UpdatePasswordUserRequest;
 
 class UserController extends Controller
 {
@@ -57,14 +60,34 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
+        if (!$user) { return response()->json(['message' => 'User not found'], 404); }
         $user->update([
-            'password' => Hash::make($request->validated()),
+            'password' => Hash::make($request->password),
             'name' => $request->name,
             'email' => $request->email,
-            'updated_at' => now()
+            
         ]);
+        // if (!$user) {
+        //     return response()->json(['message' => 'User not found'], 404);
+        // }
+
+        return response()->json([
+            'status' => true,
+            'message' => "User Updated successfully!",
+            'user' => $user
+        ], 200);
+
+    }
+    public function updatePassword(UpdatePasswordUserRequest $request, User $user)
+    {
+
+        
+        $user->update([
+            'password' => Hash::make($request->validated())
+        ]);
+
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
@@ -74,7 +97,22 @@ class UserController extends Controller
             'message' => "User Updated successfully!",
             'user' => $user
         ], 200);
+    }
+    public function updateNameEmail(UpdateNameEmailUserRequest $request, User $user)
+    {
+       
 
+        $user->update($request->validated());
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => "User Updated successfully!",
+            'user' => $user
+        ], 200);
     }
 
     /**

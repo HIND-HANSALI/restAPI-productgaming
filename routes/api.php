@@ -47,8 +47,8 @@ Route::controller(AuthController::class)->group(function () {
 });
 Route::group(['controller' => UserController::class], function () {
     Route::get('/users', 'index');
-    Route::put('/updateUser/{user}', 'update');
-    // Route::put('updateNameEmail/{user}', 'updateNameEmail')->middleware(['permission:edit my profil|edit all profil']);
-    // Route::put('updatePassword/{user}', 'updatePassword')->middleware(['permission:edit my profil|edit all profil']);
-    // Route::delete('/{user}', 'destroy')->middleware(['permission:delete my profil|delete all profil']);
+    Route::put('/updateuser/{user}', 'update');
+    Route::put('/updateNameEmail/{user}', 'updateNameEmail');
+    Route::put('/updatePassword/{user}', 'updatePassword');
+    Route::delete('/users/{user}', 'destroy');
 });

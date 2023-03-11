@@ -17,6 +17,10 @@ class Produit extends Model
         
         'user_id',
     ];
+    public function categorie()
+    {
+        return $this->belongsTo(Categorie::class);
+    }
 }
 
 
