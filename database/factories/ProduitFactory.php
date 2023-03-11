@@ -21,7 +21,7 @@ class ProduitFactory extends Factory
             "description" => fake()->name(),
             "contenu" => fake()->name(),
             "prix"=> fake()->numberBetween(1, 3),
-            // "categorie_id" => fake()->numberBetween(1, 3),
+            "categorie_id" => fake()->numberBetween(1, 3),
             
             "user_id" => fake()->numberBetween(1, 3),
         ];
