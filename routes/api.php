@@ -6,6 +6,7 @@ use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\AuthController;
 use  App\Http\Controllers\UserController;
+use  App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,4 +62,13 @@ Route::group(['controller' => UserController::class], function () {
 Route::controller(ProduitController::class)->group(function () {
     Route::get('/produits', 'index');
     Route::get('/produits/{id}','show');
+});
+
+// Route::get('/roles', [RoleController::class, 'index']);
+Route::controller(RoleController::class)->group(function () {
+    Route::get('/roles','index');
+    Route::post('/roles','store');
+    Route::get('/roles/{role}','show');
+    Route::put('/roles/{role}','update');
+    Route::delete('/roles/{role}','destroy');
 });
