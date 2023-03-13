@@ -21,20 +21,6 @@ use  App\Http\Controllers\UserController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::group(['controller' => CategorieController::class], function () {
-            Route::get('/categories', 'index');
-            Route::post('/categories', 'store');
-            Route::get('/categories/{category}', 'show');
-            Route::put('/categories/{category}', 'update');
-            Route::delete('/categories/{category}', 'destroy');
-});
-Route::group(['controller' => ProduitController::class], function () {
-    Route::get('/produits', 'index');
-    Route::get('/produits/{id}','show');
-    Route::post('/produits','store');
-    Route::put('/produits/{id}', 'update');
-    Route::delete('/produits/{id}', 'destroy');
-});
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login')->name('login');
     Route::post('/register', 'register');
@@ -42,13 +28,37 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/resetpassword','resetpassword')->name('password.reset');
     Route::middleware('auth:api')->group(function (){
         Route::post('/logout', 'logout');
-        Route::post('/refresh', 'refresh'); 
+        Route::post('/refresh', 'refresh');
+        
+        Route::group(['controller' => CategorieController::class], function () {
+            Route::get('/categories','index')->middleware(['permission:view category']);
+            Route::post('/categories', 'store')->middleware(['permission:add category']);;
+            Route::get('/categories/{category}', 'show')->middleware(['permission:view category']);
+            Route::put('/categories/{category}', 'update')->middleware(['permission:edit category']);
+            Route::delete('/categories/{category}','destroy')->middleware(['permission:delete category']);
+        });
+
+        Route::group(['controller' => ProduitController::class], function () {
+            // Route::get('/produits', 'index');
+            // Route::get('/produits/{id}','show');
+            Route::post('/produits','store')->middleware(['permission:add product']);
+            Route::put('/produits/{id}', 'update')->middleware(['permission:edit All product|edit My product']);
+            Route::delete('/produits/{id}', 'destroy')->middleware(['permission:delete All product|delete My product']);
+        });
     });
 });
+
+
+
 Route::group(['controller' => UserController::class], function () {
     Route::get('/users', 'index');
-    Route::put('/updateuser/{user}', 'update');
-    Route::put('/updateNameEmail/{user}', 'updateNameEmail');
-    Route::put('/updatePassword/{user}', 'updatePassword');
+    // Route::put('/updateuser/{user}', 'update');
+    // Route::put('/updateNameEmail/{user}', 'updateNameEmail');
+    // Route::put('/updatePassword/{user}', 'updatePassword');
     Route::delete('/users/{user}', 'destroy');
+});
+
+Route::controller(ProduitController::class)->group(function () {
+    Route::get('/produits', 'index');
+    Route::get('/produits/{id}','show');
 });
