@@ -30,6 +30,13 @@ Route::controller(AuthController::class)->group(function () {
     Route::middleware('auth:api')->group(function (){
         Route::post('/logout', 'logout');
         Route::post('/refresh', 'refresh');
+
+        Route::group(['controller' => UserController::class], function () {
+            // Route::get('/users', 'index');
+            Route::put('/updateNameEmail/{user}', 'updateNameEmail');
+            Route::put('/updatePassword/{user}', 'updatePassword');
+            Route::put('/changeRole/{user}','changeRole');
+        });
         
         Route::group(['controller' => CategorieController::class], function () {
             Route::get('/categories','index')->middleware(['permission:view category']);
@@ -45,6 +52,9 @@ Route::controller(AuthController::class)->group(function () {
             Route::post('/produits','store')->middleware(['permission:add product']);
             Route::put('/produits/{id}', 'update')->middleware(['permission:edit All product|edit My product']);
             Route::delete('/produits/{id}', 'destroy')->middleware(['permission:delete All product|delete My product']);
+        });
+        Route::controller(RoleController::class)->group(function () {
+            // Route::get('/roles','index')->middleware(['permission:view role']);
         });
     });
 });
@@ -62,6 +72,7 @@ Route::group(['controller' => UserController::class], function () {
 Route::controller(ProduitController::class)->group(function () {
     Route::get('/produits', 'index');
     Route::get('/produits/{id}','show');
+    Route::get('/produits/search/{search}','search');
 });
 
 // Route::get('/roles', [RoleController::class, 'index']);
